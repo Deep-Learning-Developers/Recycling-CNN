@@ -1,0 +1,82 @@
+
+<!-- saved from url=(0099)https://www.pythonanywhere.com/user/recyclingcnn/files/home/recyclingcnn/mysite/templates/home.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>
+    <table>
+    <tbody>
+	<tr>
+	  <td>
+		<p style="text-align:center"><b>Recycling CNN Demo</b><br>
+		Click capture to identify object in the camera<br> frame, or upload a photo to identify an object.
+		</p>
+  	  </td>
+	  <td>
+		<video id="player" controls="" autoplay=""></video>
+  	  </td>
+	  <td>
+		<button id="capture">Capture</button>
+  	  </td>
+	</tr>
+	<tr>
+	  <td>
+		<p>Prediction</p>
+	  </td>
+	  <td style="text-align:center">
+		<canvas {{canhidden}}="" id="canvas" width="320" height="240"></canvas>
+    		<img {{imghidden}}="" src="./home_files/image1.png">
+  	  </td>
+	  <td>
+		<p>{{message}}</p>
+  	  </td>
+	</tr>
+	<form id="manualform" action="https://www.pythonanywhere.com/upload-manual" method="POST" enctype="multipart/form-data"></form>
+	<tr>
+	  <td>
+		<p>Manual Upload</p>
+  	  </td>
+	  <td>
+		<input type="file" name="img2" id="img2" accept="image/*">
+  	  </td>
+	  <td>
+		<button>Submit</button>
+  	  </td>
+	</tr>
+	
+    </tbody>
+    </table>
+    <form id="form" method="POST" action="https://www.pythonanywhere.com/upload">
+        <input type="hidden" name="img1" id="img1">
+    </form>    
+    <script>
+      const player = document.getElementById('player');
+      const canvas = document.getElementById('canvas');
+      const context = canvas.getContext('2d');
+      const captureButton = document.getElementById('capture');
+      var form = document.getElementById("form");
+      form.method="POST";
+      form.action="/upload";
+      //document.body.appendChild(form);
+
+      const constraints = {
+        video: true,
+      };
+
+      captureButton.addEventListener('click', () => {
+        // Draw the video frame to the canvas.
+        context.drawImage(player, 0, 0, canvas.width, canvas.height);
+        var data_url = canvas.toDataURL('image/png');
+        var image = document.createElement('img');
+        document.getElementById("img1").value = data_url;
+        console.log(document.getElementById("img1").value);
+        //image.innerHTML = data_url;
+        //form.appendChild(image);
+        form.submit();
+      });
+
+      // Attach the video stream to the video element and autoplay.
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream) => {
+          player.srcObject = stream;
+        });
+
+    </script>
+</body></html>
